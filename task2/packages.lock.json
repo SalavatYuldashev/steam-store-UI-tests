@@ -2,12 +2,6 @@
   "version": 2,
   "dependencies": {
     "net8.0": {
-      "FluentAssertions": {
-        "type": "Direct",
-        "requested": "[8.6.0, )",
-        "resolved": "8.6.0",
-        "contentHash": "h5tb0odkLRWuwjc5EhwHQZpZm7+5YmJBNn379tJPIK04FOv3tuOfhGZTPFSuj/MTgzfV6UlAjfbSEBcEGhGucQ=="
-      },
       "Microsoft.Extensions.Configuration": {
         "type": "Direct",
         "requested": "[9.0.8, )",
@@ -71,12 +65,6 @@
         "requested": "[4.35.0, )",
         "resolved": "4.35.0",
         "contentHash": "C9OrObS2KLyUQDJNRY883JAc4n5q58pBYmY954hf+lGMQQcsz4Ias2mk91lHkLXFX+2qMttya4df9lGP1SLiGQ=="
-      },
-      "Serilog": {
-        "type": "Direct",
-        "requested": "[4.3.0, )",
-        "resolved": "4.3.0",
-        "contentHash": "+cDryFR0GRhsGOnZSKwaDzRRl4MupvJ42FhCE4zhQRVanX0Jpg6WuCBk59OVhVDPmab1bB+nRykAnykYELA9qQ=="
       },
       "WebDriverManager": {
         "type": "Direct",
