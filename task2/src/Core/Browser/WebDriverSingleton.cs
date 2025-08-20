@@ -21,6 +21,20 @@ public sealed class WebDriverSingleton
                     options.AddArgument("--headless");
                 }
 
+                if (_settings.Maximize)
+                {
+                    options.AddArgument("--maximize");
+                }
+
+                if (_settings.Incognito)
+                {
+                    options.AddArgument("--incognito");
+                }
+
+                if (_settings.UILanguage.Equals("en"))
+                {
+                    options.AddArgument("--ui-language=en");
+                }
                 _driver = new ChromeDriver(options);
             }
 

@@ -9,6 +9,7 @@
     <ItemGroup>
         <PackageReference Include="Selenium.WebDriver" />
         <PackageReference Include="Selenium.Support" />
+        <PackageReference Include="SeleniumExtras.WaitHelpers" />
         <PackageReference Include="WebDriverManager" />
         <PackageReference Include="NUnit" />
         <PackageReference Include="NUnit3TestAdapter" />
