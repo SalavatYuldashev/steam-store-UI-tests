@@ -4,7 +4,7 @@ namespace task2.Pages;
 
 public class StorePage : BasePage
 {
-    private By AboutButton => By.Id("storeButon");
+    private By StorePageIndicator => By.CssSelector(".home_page_content");
 
     public StorePage(IWebDriver driver) : base(driver)
     {
@@ -14,7 +14,7 @@ public class StorePage : BasePage
     {
         try
         {
-            return Find(AboutButton).Displayed;
+            return Find(StorePageIndicator).Displayed;
         }
         catch (NoSuchElementException)
         {

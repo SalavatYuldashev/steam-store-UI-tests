@@ -2,11 +2,10 @@
 
 public class TestSettings
 {
-    public static string BaseUrl { get; set; } = string.Empty;
-    public static bool Incognito { get; set; } = true;
-    public static bool Headless { get; set; } = false;
-    public static int ImplicitWaitSec { get; set; } = 5;
-    public static string UILanguage { get; set; } = "en";
-    public static bool Maximize { get; set; } = true;
-    
+    public string BaseUrl { get; set; } = string.Empty;
+    public bool Incognito { get; set; } = true;
+    public bool Headless { get; set; } = false;
+    public int ImplicitWaitSec { get; set; } = 5;
+    public string UILanguage { get; set; } = "en";
+    public bool Maximize { get; set; } = true;
 }

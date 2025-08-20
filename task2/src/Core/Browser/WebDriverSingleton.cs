@@ -1,6 +1,8 @@
-﻿using OpenQA.Selenium.Chrome;
+﻿using System;
+using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium;
 using task2.Core.Config;
+
 
 namespace task2.Core.Browser;
 
@@ -15,27 +17,25 @@ public sealed class WebDriverSingleton
             if (_driver == null)
             {
                 var options = new ChromeOptions();
-                if (TestSettings.Headless)
+                if (Config.AppConfig.Settings.Headless)
                 {
                     options.AddArgument("--headless");
                 }
 
-                if (TestSettings.Maximize)
+                if (Config.AppConfig.Settings.Maximize)
                 {
-                    options.AddArgument("--maximize");
+                    options.AddArgument("--start-maximized");
                 }
 
-                if (TestSettings.Incognito)
+                if (Config.AppConfig.Settings.Incognito)
                 {
                     options.AddArgument("--incognito");
                 }
 
-                if (TestSettings.UILanguage.Equals("en"))
-                {
-                    options.AddArgument("--ui-language=en");
-                }
+                options.AddArgument($"--lang={Config.AppConfig.Settings.UILanguage}");
 
                 _driver = new ChromeDriver(options);
+                _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(Config.AppConfig.Settings.ImplicitWaitSec);
             }
 
             return _driver;

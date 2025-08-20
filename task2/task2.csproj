@@ -19,7 +19,7 @@
         <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
     </ItemGroup>
     <ItemGroup>
-        <None Update="appsettings.json">
+        <None Update="src/Core/Config/appsettings.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
         <None Update="testdata/users.json">

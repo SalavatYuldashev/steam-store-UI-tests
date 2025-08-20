@@ -4,9 +4,10 @@ namespace task2.Pages;
 
 public class AboutPage : BasePage
 {
-    private By AboutButton => By.Id("about");
-    private By StoreButon => By.Id("storeButon");
-
+    private By AboutPageIndicator => By.CssSelector(".about-header");
+    private By StoreButton => By.CssSelector("a[href*='store']");
+    private By OnlinePlayersElement => By.XPath("//[contains(., 'online')]");
+    private By ActivePlayersElement => By.XPath("//[contains(., 'playing now')]");
     private int? ActivePlayers = null;
     private int? OnlinePlayers = null;
 
@@ -18,7 +19,7 @@ public class AboutPage : BasePage
     {
         try
         {
-            return Find(AboutButton).Displayed;
+            return Find(AboutPageIndicator).Displayed;
         }
         catch (NoSuchElementException)
         {
@@ -28,17 +29,37 @@ public class AboutPage : BasePage
 
     public StorePage GoToStorePage(IWebDriver driver)
     {
-        Find(StoreButon).Click();
+        Find(StoreButton).Click();
         return new StorePage(driver);
     }
 
     public int GetActivePlayers()
     {
-        return 10;
+        try
+        {
+            var text = Find(ActivePlayersElement).Text;
+            var numberString = text.Replace("playing now: ", "").Replace(",", "");
+            return int.Parse(numberString);
+
+        }
+        catch
+        {
+            return 0;
+        }
     }
 
     public int GetOnlinePlayers()
     {
-        return 10;
+        try
+        {
+            var text = Find(ActivePlayersElement).Text;
+            var numberString = text.Replace("online: ", "").Replace(",", "");
+            return int.Parse(numberString);
+
+        }
+        catch
+        {
+            return 0;
+        }
     }
 }

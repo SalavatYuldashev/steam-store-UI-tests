@@ -2,6 +2,7 @@ using System;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
+using task2.Core.Config;
 
 namespace task2.Pages;
 
@@ -13,7 +14,7 @@ public abstract class BasePage
     protected BasePage(IWebDriver driver)
     {
         Driver = driver;
-        Wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+        Wait = new WebDriverWait(driver, TimeSpan.FromSeconds(AppConfig.Settings.ImplicitWaitSec));
     }
 
     protected IWebElement Find(By locator) => Wait.Until(ExpectedConditions.ElementIsVisible(locator));
