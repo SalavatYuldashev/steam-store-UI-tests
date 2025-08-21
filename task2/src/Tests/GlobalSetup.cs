@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using OpenQA.Selenium;
 using task2.Core.Browser;
 using task2.Core.Config;
 

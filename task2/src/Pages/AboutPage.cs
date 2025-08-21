@@ -1,15 +1,18 @@
-﻿using OpenQA.Selenium;
+﻿using System;
+using System.Text.RegularExpressions;
+using OpenQA.Selenium;
 
 namespace task2.Pages;
 
 public class AboutPage : BasePage
 {
-    private By AboutPageIndicator => By.CssSelector(".about-header");
-    private By StoreButton => By.CssSelector("a[href*='store']");
-    private By OnlinePlayersElement => By.XPath("//[contains(., 'online')]");
-    private By ActivePlayersElement => By.XPath("//[contains(., 'playing now')]");
-    private int? ActivePlayers = null;
-    private int? OnlinePlayers = null;
+    //private By AboutPageIndicator => By.CssSelector(".about-header");
+    private By AboutPageIndicator => By.XPath("//*[contains(@id,'about_') and contains(@class,'about_')]");
+    private By StoreButton => By.XPath("//*[@id='global_header']//a[@class='menuitem supernav' and normalize-space()='STORE']");
+    private By OnlinePlayersElement => By.XPath("//*[contains(@class,'online_stat_label') and contains(@class,'gamers_online')]" +
+                                                "/parent::*[contains(@class,'online_stat')]");
+    private By ActivePlayersElement => By.XPath("//*[contains(@class,'online_stat_label') and contains(@class,'gamers_in_game')]" +
+                                                "/parent::*[contains(@class,'online_stat')]");
 
     public AboutPage(IWebDriver driver) : base(driver)
     {
@@ -33,14 +36,17 @@ public class AboutPage : BasePage
         return new StorePage(driver);
     }
 
-    public int GetActivePlayers()
+    public long GetActivePlayers()
     {
         try
         {
             var text = Find(ActivePlayersElement).Text;
-            var numberString = text.Replace("playing now: ", "").Replace(",", "");
-            return int.Parse(numberString);
-
+            Console.WriteLine($"Активные пользователи с сайта:{text}");
+            var onlynumber = Regex.Replace(text, @"[^\d]", "");
+            Console.WriteLine($"Только цифры:{onlynumber}");
+            var number = long.Parse(onlynumber);
+            Console.WriteLine($"Число в long:{number}");
+            return number;  
         }
         catch
         {
@@ -48,14 +54,15 @@ public class AboutPage : BasePage
         }
     }
 
-    public int GetOnlinePlayers()
+    public long GetOnlinePlayers()
     {
         try
         {
-            var text = Find(ActivePlayersElement).Text;
-            var numberString = text.Replace("online: ", "").Replace(",", "");
-            return int.Parse(numberString);
-
+            var text = Find(OnlinePlayersElement).Text;
+            var onlynumber = Regex.Replace(text, @"[^\d]", "");
+            var number = long.Parse(onlynumber);
+            Console.WriteLine($"Online players:{number}");
+            return number;
         }
         catch
         {

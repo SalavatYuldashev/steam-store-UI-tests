@@ -4,7 +4,7 @@ namespace task2.Pages;
 
 public class StorePage : BasePage
 {
-    private By StorePageIndicator => By.CssSelector(".home_page_content");
+    private By StorePageIndicator => By.XPath("//*[@id='store_header']//*[@id='store_nav_area']");
 
     public StorePage(IWebDriver driver) : base(driver)
     {

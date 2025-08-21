@@ -11,7 +11,8 @@ public class HomePage : BasePage
     private By SteamLogo =>
         By.XPath("//*[@id='logo_holder']//a//img[contains(translate(@alt,'STEAM','steam'),'steam')]");
 
-    private By AboutButton => By.XPath("//*[contains(@id,'about_') and contains(@class,'about_')]");
+    private By AboutButton =>
+        By.XPath("//*[contains(@class,'content')]//*[@class= 'supernav_container']//a[contains(.,'About')]");
 
     public bool IsAt()
     {
