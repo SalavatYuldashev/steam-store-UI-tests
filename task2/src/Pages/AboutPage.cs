@@ -6,13 +6,18 @@ namespace task2.Pages;
 
 public class AboutPage : BasePage
 {
-    //private By AboutPageIndicator => By.CssSelector(".about-header");
     private By AboutPageIndicator => By.XPath("//*[contains(@id,'about_') and contains(@class,'about_')]");
-    private By StoreButton => By.XPath("//*[@id='global_header']//a[@class='menuitem supernav' and normalize-space()='STORE']");
-    private By OnlinePlayersElement => By.XPath("//*[contains(@class,'online_stat_label') and contains(@class,'gamers_online')]" +
-                                                "/parent::*[contains(@class,'online_stat')]");
-    private By ActivePlayersElement => By.XPath("//*[contains(@class,'online_stat_label') and contains(@class,'gamers_in_game')]" +
-                                                "/parent::*[contains(@class,'online_stat')]");
+
+    private By StoreButton =>
+        By.XPath("//*[@id='global_header']//a[@class='menuitem supernav' and normalize-space()='STORE']");
+
+    private By OnlinePlayersElement => By.XPath(
+        "//*[contains(@class,'online_stat_label') and contains(@class,'gamers_online')]" +
+        "/parent::*[contains(@class,'online_stat')]");
+
+    private By ActivePlayersElement => By.XPath(
+        "//*[contains(@class,'online_stat_label') and contains(@class,'gamers_in_game')]" +
+        "/parent::*[contains(@class,'online_stat')]");
 
     public AboutPage(IWebDriver driver) : base(driver)
     {
@@ -46,7 +51,7 @@ public class AboutPage : BasePage
             Console.WriteLine($"Только цифры:{onlynumber}");
             var number = long.Parse(onlynumber);
             Console.WriteLine($"Число в long:{number}");
-            return number;  
+            return number;
         }
         catch
         {
@@ -59,8 +64,8 @@ public class AboutPage : BasePage
         try
         {
             var text = Find(OnlinePlayersElement).Text;
-            var onlynumber = Regex.Replace(text, @"[^\d]", "");
-            var number = long.Parse(onlynumber);
+            var onlyNumber = Regex.Replace(text, @"[^\d]", "");
+            var number = long.Parse(onlyNumber);
             Console.WriteLine($"Online players:{number}");
             return number;
         }

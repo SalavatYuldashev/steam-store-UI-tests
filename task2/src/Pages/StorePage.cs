@@ -1,5 +1,4 @@
 ﻿using OpenQA.Selenium;
-
 namespace task2.Pages;
 
 public class StorePage : BasePage

@@ -1,5 +1,4 @@
-﻿using System;
-namespace task2.Core.Config;
+﻿namespace task2.Core.Utils;
 
 public static class AppConfig
 {
@@ -12,7 +11,7 @@ public static class AppConfig
             if (_settings == null) ;
 
             {
-                _settings = ConfigReader.load();
+                _settings = ConfigReader.Load();
             }
             return _settings;
         }

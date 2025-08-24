@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 using task2.Core.Browser;
-using task2.Core.Config;
+using task2.Core.Utils;
 
 
 namespace task2.Tests;
@@ -14,7 +14,7 @@ public class GlobalSetup
         TestContext.WriteLine($"Tests will run on website: {AppConfig.Settings.BaseUrl}");
         TestContext.WriteLine($"Browser settings: Headless= {AppConfig.Settings.Headless}, " +
                               $"Incognito={AppConfig.Settings.Incognito}, " +
-                              $"Language={AppConfig.Settings.UILanguage}");
+                              $"Language={AppConfig.Settings.UiLanguage}");
     }
 
     [OneTimeTearDown]

@@ -1,4 +1,4 @@
-﻿namespace task2.Core.Config;
+﻿namespace task2.Core.Utils;
 
 public class TestSettings
 {
@@ -6,6 +6,8 @@ public class TestSettings
     public bool Incognito { get; set; } = true;
     public bool Headless { get; set; } = false;
     public int ImplicitWaitSec { get; set; } = 5;
-    public string UILanguage { get; set; } = "en";
+    public string UiLanguage { get; set; } = "en";
     public bool Maximize { get; set; } = true;
+    
+    
 }

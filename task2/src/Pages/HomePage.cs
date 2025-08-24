@@ -13,6 +13,11 @@ public class HomePage : BasePage
 
     private By AboutButton =>
         By.XPath("//*[contains(@class,'content')]//*[@class= 'supernav_container']//a[contains(.,'About')]");
+    private By NewAndNoteworthyMenu =>
+        By.XPath("//a[contains(@class,'desktop') and contains(text(),'Noteworthy')]");
+
+    private By TopSellersMenuItem =>
+        By.XPath("//a[contains(@class,'popup') and contains(text(),'Sellers')]");
 
     public bool IsAt()
     {
@@ -28,7 +33,14 @@ public class HomePage : BasePage
 
     public AboutPage GoToAboutPage(IWebDriver driver)
     {
-        Click(AboutButton);
+        CustomClick(AboutButton);
         return new AboutPage(driver);
     }
+
+    public TopSellersPage GoToTopSellersPage(IWebDriver driver)
+    {
+        HoverAndClick(NewAndNoteworthyMenu,TopSellersMenuItem);
+        return new TopSellersPage(driver);
+    }
+    
 }

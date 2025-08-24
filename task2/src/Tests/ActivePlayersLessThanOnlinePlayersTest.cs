@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using OpenQA.Selenium;
 using task2.Core.Browser;
-using task2.Core.Config;
+using task2.Core.Utils;
 using task2.Pages;
 
 namespace task2.Tests;

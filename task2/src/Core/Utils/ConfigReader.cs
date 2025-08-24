@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.Configuration;
 
-namespace task2.Core.Config;
+namespace task2.Core.Utils;
 
-public class ConfigReader
+public abstract class ConfigReader
 {
-    public static TestSettings load()
+    public static TestSettings Load()
     {
         var configurationRoot = new ConfigurationBuilder()
             .AddJsonFile("src/Core/Config/appsettings.json", optional: true, reloadOnChange: true)

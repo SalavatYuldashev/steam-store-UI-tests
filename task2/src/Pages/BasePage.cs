@@ -1,15 +1,17 @@
 using System;
+using NUnit.Framework;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
-using task2.Core.Config;
+using task2.Core.Utils;
 
 namespace task2.Pages;
 
 public abstract class BasePage
 {
     protected readonly IWebDriver Driver;
-    private readonly WebDriverWait Wait;
+    protected readonly WebDriverWait Wait;
 
     protected BasePage(IWebDriver driver)
     {
@@ -18,7 +20,7 @@ public abstract class BasePage
     }
 
     protected IWebElement Find(By locator) => Wait.Until(ExpectedConditions.ElementIsVisible(locator));
-    protected void Click(By locator) => Find(locator).Click();
+    protected void CustomClick(By locator) => Find(locator).Click();
 
     protected void Type(By locator, string text)
     {
@@ -28,4 +30,102 @@ public abstract class BasePage
     }
 
     protected string Text(By locator) => Find(locator).Text;
+
+    protected void HoverAndClick(By hoverLocator, By clickLocator)
+    {
+        var actions = new Actions(Driver);
+        var hoverElement = Find(hoverLocator);
+        actions.MoveToElement(hoverElement).Perform();
+
+        var clickElement = Wait.Until(ExpectedConditions.ElementToBeClickable(clickLocator));
+        clickElement.Click();
+    }
+
+    protected void ScrollAndClick(By locator)
+    {
+        var element = Wait.Until(ExpectedConditions.ElementToBeClickable(locator));
+        var actions = new Actions(Driver);
+        actions.MoveToElement(element).Perform();
+        element.Click();
+    }
+
+    protected void ScrollTo(IWebElement el) =>
+        new Actions(Driver).ScrollToElement(el).Perform();
+
+    protected IWebElement WaitExists(By by) =>
+        new WebDriverWait(Driver, TimeSpan.FromSeconds(AppConfig.Settings.ImplicitWaitSec))
+            .Until(ExpectedConditions.ElementExists(by));
+
+    protected bool TryClick(By by, int shortSec = 2)
+    {
+        try
+        {
+            var shortWait = new WebDriverWait(Driver, TimeSpan.FromSeconds(shortSec));
+            shortWait.IgnoreExceptionTypes(typeof(NoSuchElementException), typeof(ElementNotInteractableException));
+            var el = shortWait.Until(ExpectedConditions.ElementToBeClickable(by));
+            ScrollTo(el);
+            el.Click();
+            return true;
+        }
+        catch (WebDriverTimeoutException)
+        {
+            return false;
+        }
+        catch (ElementClickInterceptedException)
+        {
+            return false;
+        }
+    }
+
+    protected void ClickWithExpand(By checkbox, By sectionHeader)
+    {
+        if (TryClick(checkbox)) return;
+
+        var header = Wait.Until(ExpectedConditions.ElementToBeClickable(sectionHeader));
+        ScrollTo(header);
+        header.Click();
+        TestContext.WriteLine($"Кликнули по хедеру и развернули секцию");
+
+        var cb = Wait.Until(ExpectedConditions.ElementExists(checkbox));
+        TestContext.WriteLine($"Подождали");
+        ScrollTo(cb);
+        cb.Click();
+        TestContext.WriteLine($"Кликнули по чекбоксу");
+    }
+
+    public void AcceptCookiesIfPresent()
+    {
+        var popup = By.Id("cookiePrefPopup");
+        var accept = By.Id("acceptAllButton");
+
+        try
+        {
+            // ждём появления попапа (если его нет — выходим через timeout catch)
+            var waitShort = new WebDriverWait(Driver, TimeSpan.FromSeconds(5));
+            waitShort.Until(d => d.FindElements(popup).Count > 0);
+
+            // когда есть, ждём кликабельность кнопки
+            var btn = waitShort.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(accept));
+
+            // скроллим к кнопке «родным» способом Selenium
+            new Actions(Driver).MoveToElement(btn).Perform();
+
+            btn.Click();
+
+            // опционально: ждём, что баннер исчез
+            new WebDriverWait(Driver, TimeSpan.FromSeconds(10))
+                .Until(SeleniumExtras.WaitHelpers.ExpectedConditions.InvisibilityOfElementLocated(popup));
+        }
+        catch (WebDriverTimeoutException)
+        {
+            // баннер не появился — ничего страшного
+        }
+        catch (ElementClickInterceptedException)
+        {
+            // иногда перекрывается — небольшой повтор
+            var btn = Driver.FindElement(accept);
+            new Actions(Driver).MoveToElement(btn).Perform();
+            btn.Click();
+        }
+    }
 }
