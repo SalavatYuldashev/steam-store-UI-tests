@@ -5,11 +5,11 @@ namespace task2.Pages;
 
 public class TopSellersPage : BasePage
 {
-    public readonly SearchFilters SearchFilters;
+    public readonly SearchFiltersComponent SearchFiltersComponent;
 
     public TopSellersPage(IWebDriver driver) : base(driver)
     {
-        SearchFilters = new SearchFilters(driver);
+        SearchFiltersComponent = new SearchFiltersComponent(driver);
     }
 
     private By TopSellersPageIndicator =>

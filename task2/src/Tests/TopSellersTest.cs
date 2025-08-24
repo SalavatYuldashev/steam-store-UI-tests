@@ -63,13 +63,28 @@ public class TopSellersTest
         Assert.That(topSellersWithFiltersPage.IsAt(), Is.True, "Failed to navigate to TopSellersWithFiltersPage");
         topSellersWithFiltersPage.AcceptCookiesIfPresent();
         TestContext.WriteLine("Открыта расширенная страница с лидерами продаж");
-        topSellersWithFiltersPage.SearchFilters.SelectSteamOsLinuxCheckbox();
+        
+        topSellersWithFiltersPage.SearchFiltersComponent.SelectSteamOsLinuxCheckbox();
+        var isSteamOsChecked =
+            topSellersWithFiltersPage.IsCheckboxChecked(topSellersWithFiltersPage.SearchFiltersComponent
+                .SteamOsLinuxCheckbox);
+        Assert.That(isSteamOsChecked, Is.True, "Failed to check SteamOsLinuxCheckbox");
         TestContext.WriteLine("Выбран чек бокc SteamOsLinuxCheckbox");
-        topSellersWithFiltersPage.SearchFilters.SelectCoopLanCheckbox();
-        TestContext.WriteLine("Выбран чек бокc LAN Co-op");
-        topSellersWithFiltersPage.SearchFilters.SelectActionCheckbox();
-        TestContext.WriteLine("Выбран чек бокc Action");
-
+        
+        topSellersWithFiltersPage.SearchFiltersComponent.SelectCoopLanCheckbox();
+        var isLanCoopChecked =
+            topSellersWithFiltersPage.IsCheckboxChecked(topSellersWithFiltersPage.SearchFiltersComponent
+                .CoopLanCheckbox);
+        Assert.That(isLanCoopChecked, Is.True, "Failed to check LANCoopCheckbox");
+        TestContext.WriteLine("Выбран чек бокc LANCoopCheckbox");
+        
+        topSellersWithFiltersPage.SearchFiltersComponent.SelectActionCheckbox();
+        var isActionChecked =
+            topSellersWithFiltersPage.IsCheckboxChecked(topSellersWithFiltersPage.SearchFiltersComponent
+                .ActionCheckbox);
+        Assert.That(isActionChecked, Is.True, "Failed to check ActionCheckbox");
+        TestContext.WriteLine("Выбран чек бокc ActionCheckbox");
+        
         var expected = topSellersWithFiltersPage.GetExpectedFilterResultsCount();
         var actual = topSellersWithFiltersPage.GetActualFilterResultsCount();
         Assert.That(actual, Is.EqualTo(expected),
@@ -87,6 +102,5 @@ public class TopSellersTest
         Assert.That(gameFromList.ReleaseDate, Is.EqualTo(gameFromGameDetailsPage.ReleaseDate));
         Assert.That(gameFromList.Price, Is.EqualTo(gameFromGameDetailsPage.Price));
         TestContext.WriteLine("Сравнили информацию о играх");
-
     }
 }

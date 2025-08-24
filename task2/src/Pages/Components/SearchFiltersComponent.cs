@@ -6,27 +6,28 @@ using task2.Core.Utils;
 
 namespace task2.Pages.Components;
 
-public class SearchFilters : BasePage
+public class SearchFiltersComponent : BasePage
 {
     private readonly IWebDriver _driver;
     private readonly WebDriverWait _wait;
 
-    public SearchFilters(IWebDriver driver) : base(driver)
+    public SearchFiltersComponent(IWebDriver driver) : base(driver)
     {
         _driver = driver;
         _wait = new WebDriverWait(driver, TimeSpan.FromSeconds(AppConfig.Settings.ImplicitWaitSec));
     }
 
-    private By SteamOsLinuxCheckbox => By.XPath(
-        "//*[contains(@class,'search_collapse_block')]//span[contains(@data-loc,'SteamOS')]");
+    public By SteamOsLinuxCheckbox => By.XPath(
+        "//span[contains(@class,'tab_filter_control') and contains(@data-loc,'SteamOS') and not(contains(@class,'tab_filter_control_not'))]");
 
-    private By CoopLanCheckbox => By.XPath(
-        "//*[contains(@class,'search_collapse_block')]//span[contains(@data-loc,'LAN Co-op')]");
+    public By CoopLanCheckbox => By.XPath(
+        "//span[contains(@class,'tab_filter_control') and contains(@data-loc,'LAN Co-op') " +
+        "and not(contains(@class,'tab_filter_control_not'))]");
 
-    private By ActionCheckbox =>
+    public By ActionCheckbox =>
         By.XPath(
-            "//*[@id='TagFilter_Container']/*[contains(@data-loc,'Action') " +
-            "and contains(@data-value,'19')]//*[@class='tab_filter_control_checkbox']");
+            "//span[contains(@class,'tab_filter_control') and @data-loc='Action' " +
+            "and not(contains(@class,'tab_filter_control_not'))]");
 
     private By NumberOfPlayersExpandButton => By.XPath(
         "//*[@class='block_header']//*[contains(.,'number of player')]");
@@ -56,7 +57,7 @@ public class SearchFilters : BasePage
             var searchInput = _wait.Until(ExpectedConditions.ElementToBeClickable(TagSearchInput));
             searchInput.Clear();
             searchInput.SendKeys("action");
-            
+
             var checkbox = _wait.Until(ExpectedConditions.ElementToBeClickable(ActionCheckbox));
             checkbox.Click();
             System.Console.WriteLine(" Successfully applied Action filter");

@@ -8,12 +8,19 @@ namespace task2.Pages;
 
 public class TopSellersWithFiltersPage : BasePage
 {
-    public readonly SearchFilters SearchFilters;
+    public readonly SearchFiltersComponent SearchFiltersComponent;
 
     public TopSellersWithFiltersPage(IWebDriver driver) : base(driver)
     {
-        SearchFilters = new SearchFilters(driver);
+        SearchFiltersComponent = new SearchFiltersComponent(driver);
     }
+
+    private string UniversalFilterContainer =
+        "//div[contains(@class,'block search_collapse_block') and @data-collapse-name=$BLOCK]" +
+        "//span[contains(@class,'tab_filter_control') and @role='button'" +
+        "and contains(@class,'tab_filter_control_include')" +
+        "and not(contains(@class,'tab_filter_control_not'))" +
+        "and @data-loc={FILTER}]";
 
     private By TopSellersMoreResultsPageIndicator =>
         By.XPath("//*[contains(@class,'pageheader') and (contains(text(),'Top Sellers'))]");
@@ -140,5 +147,20 @@ public class TopSellersWithFiltersPage : BasePage
         var firstGame = Find(FirstGameResult);
         firstGame.Click();
         return new GameDetailsPage(Driver);
+    }
+
+    public bool IsCheckboxChecked(By locator)
+    {
+        System.Threading.Thread.Sleep(150);
+        try
+        {
+            var element = Find(locator);
+            var classAttr = element.GetAttribute("class") ?? string.Empty;
+            return classAttr.Contains("checked", StringComparison.OrdinalIgnoreCase);
+        }
+        catch (NoSuchElementException)
+        {
+            return false;
+        }
     }
 }
