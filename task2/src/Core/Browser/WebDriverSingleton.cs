@@ -3,7 +3,6 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium;
 using task2.Core.Utils;
 
-
 namespace task2.Core.Browser;
 
 public sealed class WebDriverSingleton

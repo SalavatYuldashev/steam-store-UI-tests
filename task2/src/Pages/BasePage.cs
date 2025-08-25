@@ -92,40 +92,4 @@ public abstract class BasePage
         cb.Click();
         TestContext.WriteLine($"Кликнули по чекбоксу");
     }
-
-    public void AcceptCookiesIfPresent()
-    {
-        var popup = By.Id("cookiePrefPopup");
-        var accept = By.Id("acceptAllButton");
-
-        try
-        {
-            // ждём появления попапа (если его нет — выходим через timeout catch)
-            var waitShort = new WebDriverWait(Driver, TimeSpan.FromSeconds(5));
-            waitShort.Until(d => d.FindElements(popup).Count > 0);
-
-            // когда есть, ждём кликабельность кнопки
-            var btn = waitShort.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(accept));
-
-            // скроллим к кнопке «родным» способом Selenium
-            new Actions(Driver).MoveToElement(btn).Perform();
-
-            btn.Click();
-
-            // опционально: ждём, что баннер исчез
-            new WebDriverWait(Driver, TimeSpan.FromSeconds(10))
-                .Until(SeleniumExtras.WaitHelpers.ExpectedConditions.InvisibilityOfElementLocated(popup));
-        }
-        catch (WebDriverTimeoutException)
-        {
-            // баннер не появился — ничего страшного
-        }
-        catch (ElementClickInterceptedException)
-        {
-            // иногда перекрывается — небольшой повтор
-            var btn = Driver.FindElement(accept);
-            new Actions(Driver).MoveToElement(btn).Perform();
-            btn.Click();
-        }
-    }
 }

@@ -1,0 +1,20 @@
+﻿{
+  "TopSellersFilters": [
+    {
+      "Block": "os",
+      "Name": "SteamOS + Linux",
+      "UseSearch": false
+    },
+    {
+      "Block": "category3",
+      "Name": "LAN Co-op",
+      "UseSearch": false
+    },
+    {
+      "Block": "tag",
+      "Name": "Action",
+      "UseSearch": true,
+      "SearchText": "action"
+    }
+  ]
+}

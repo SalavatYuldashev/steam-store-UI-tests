@@ -1,4 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
         <IsPackable>false</IsPackable>
@@ -6,24 +7,29 @@
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
         <Nullable>enable</Nullable>
     </PropertyGroup>
+
     <ItemGroup>
-        <PackageReference Include="Selenium.WebDriver" />
-        <PackageReference Include="Selenium.Support" />
-        <PackageReference Include="SeleniumExtras.WaitHelpers" />
-        <PackageReference Include="WebDriverManager" />
-        <PackageReference Include="NUnit" />
-        <PackageReference Include="NUnit3TestAdapter" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" />
-        <PackageReference Include="Microsoft.Extensions.Configuration" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Json" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
+        <PackageReference Include="Selenium.WebDriver"/>
+        <PackageReference Include="Selenium.Support"/>
+        <PackageReference Include="SeleniumExtras.WaitHelpers"/>
+        <PackageReference Include="WebDriverManager"/>
+        <PackageReference Include="NUnit"/>
+        <PackageReference Include="NUnit3TestAdapter"/>
+        <PackageReference Include="Microsoft.NET.Test.Sdk"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder"/>
     </ItemGroup>
+    
     <ItemGroup>
-        <None Update="src/Core/Config/appsettings.json">
+        <Content Include="src/Core/Config/appsettings.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-        <None Update="testdata/users.json">
+            <Link>appsettings.json</Link>
+        </Content>
+        <Content Include="src/TestData/filters.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
+            <Link>filters.json</Link>
+        </Content>
     </ItemGroup>
+
 </Project>

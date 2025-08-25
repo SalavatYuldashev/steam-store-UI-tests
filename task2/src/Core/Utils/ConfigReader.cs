@@ -7,7 +7,7 @@ public abstract class ConfigReader
     public static TestSettings Load()
     {
         var configurationRoot = new ConfigurationBuilder()
-            .AddJsonFile("src/Core/Config/appsettings.json", optional: true, reloadOnChange: true)
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
             .Build();
         var testSettings = new TestSettings();
         configurationRoot.Bind(testSettings);

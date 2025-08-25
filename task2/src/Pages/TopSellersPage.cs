@@ -6,10 +6,12 @@ namespace task2.Pages;
 public class TopSellersPage : BasePage
 {
     public readonly SearchFiltersComponent SearchFiltersComponent;
+    public readonly CookieBannerComponent Cookies;
 
     public TopSellersPage(IWebDriver driver) : base(driver)
     {
         SearchFiltersComponent = new SearchFiltersComponent(driver);
+        Cookies = new CookieBannerComponent(driver);
     }
 
     private By TopSellersPageIndicator =>

@@ -13,6 +13,7 @@ public class HomePage : BasePage
 
     private By AboutButton =>
         By.XPath("//*[contains(@class,'content')]//*[@class= 'supernav_container']//a[contains(.,'About')]");
+
     private By NewAndNoteworthyMenu =>
         By.XPath("//a[contains(@class,'desktop') and contains(text(),'Noteworthy')]");
 
@@ -39,8 +40,7 @@ public class HomePage : BasePage
 
     public TopSellersPage GoToTopSellersPage(IWebDriver driver)
     {
-        HoverAndClick(NewAndNoteworthyMenu,TopSellersMenuItem);
+        HoverAndClick(NewAndNoteworthyMenu, TopSellersMenuItem);
         return new TopSellersPage(driver);
     }
-    
 }

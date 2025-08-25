@@ -3,15 +3,11 @@ using task2.Pages.Components;
 
 namespace task2.Pages;
 
-public class GameDetailsPage : BasePage
+public class GameDetailsPage(IWebDriver driver) : BasePage(driver)
 {
-    public GameDetailsPage(IWebDriver driver) : base(driver)
-    {
-    }
-
-    private By GameTitle => By.CssSelector(".apphub_AppName, .pageheader .page_title");
-    private By GameReleaseDate => By.CssSelector(".release_date .date, .blockbg .block_content .date");
-    private By GamePrice => By.CssSelector(".game_purchase_price, .game_area_purchase_game .price");
+    private By GameTitle => By.XPath("//*[@id='appHubAppName']");
+    private By GameReleaseDate => By.XPath("//*[@class='release_date']//*[@class='date']");
+    private By GamePrice => By.XPath("//*[@class='game_area_purchase_game']//*[@class='game_purchase_price price']");
 
     public bool IsAt()
     {

@@ -4,7 +4,7 @@ using OpenQA.Selenium;
 
 namespace task2.Pages;
 
-public class AboutPage : BasePage
+public class AboutPage(IWebDriver driver) : BasePage(driver)
 {
     private By AboutPageIndicator => By.XPath("//*[contains(@id,'about_') and contains(@class,'about_')]");
 
@@ -18,10 +18,6 @@ public class AboutPage : BasePage
     private By ActivePlayersElement => By.XPath(
         "//*[contains(@class,'online_stat_label') and contains(@class,'gamers_in_game')]" +
         "/parent::*[contains(@class,'online_stat')]");
-
-    public AboutPage(IWebDriver driver) : base(driver)
-    {
-    }
 
     public bool IsAt()
     {
@@ -47,9 +43,9 @@ public class AboutPage : BasePage
         {
             var text = Find(ActivePlayersElement).Text;
             Console.WriteLine($"Активные пользователи с сайта:{text}");
-            var onlynumber = Regex.Replace(text, @"[^\d]", "");
-            Console.WriteLine($"Только цифры:{onlynumber}");
-            var number = long.Parse(onlynumber);
+            var onlyNumber = Regex.Replace(text, @"[^\d]", "");
+            Console.WriteLine($"Только цифры:{onlyNumber}");
+            var number = long.Parse(onlyNumber);
             Console.WriteLine($"Число в long:{number}");
             return number;
         }

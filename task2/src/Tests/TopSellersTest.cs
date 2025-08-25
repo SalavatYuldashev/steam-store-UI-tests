@@ -56,12 +56,12 @@ public class TopSellersTest
     {
         var topSellersPage = _homePage.GoToTopSellersPage(_driver);
         Assert.That(topSellersPage.IsAt(), Is.True, "Failed to navigate to TopSellersPage");
-        topSellersPage.AcceptCookiesIfPresent();
+        topSellersPage.Cookies.AcceptIfPresent();
         TestContext.WriteLine("Открыта страница с лидерами продаж");
 
         var topSellersWithFiltersPage = topSellersPage.ScrollToMoreTopSellersButtonAndClick(_driver);
         Assert.That(topSellersWithFiltersPage.IsAt(), Is.True, "Failed to navigate to TopSellersWithFiltersPage");
-        topSellersWithFiltersPage.AcceptCookiesIfPresent();
+        topSellersPage.Cookies.AcceptIfPresent();
         TestContext.WriteLine("Открыта расширенная страница с лидерами продаж");
         
         topSellersWithFiltersPage.SearchFiltersComponent.SelectSteamOsLinuxCheckbox();
