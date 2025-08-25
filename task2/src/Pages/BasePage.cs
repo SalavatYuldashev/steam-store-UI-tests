@@ -1,5 +1,4 @@
 using System;
-using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
@@ -21,13 +20,6 @@ public abstract class BasePage
 
     protected IWebElement Find(By locator) => Wait.Until(ExpectedConditions.ElementIsVisible(locator));
     protected void CustomClick(By locator) => Find(locator).Click();
-
-    protected void Type(By locator, string text)
-    {
-        var element = Find(locator);
-        element.Clear();
-        element.SendKeys(text);
-    }
 
     protected string Text(By locator) => Find(locator).Text;
 
@@ -55,41 +47,4 @@ public abstract class BasePage
     protected IWebElement WaitExists(By by) =>
         new WebDriverWait(Driver, TimeSpan.FromSeconds(AppConfig.Settings.ImplicitWaitSec))
             .Until(ExpectedConditions.ElementExists(by));
-
-    protected bool TryClick(By by, int shortSec = 2)
-    {
-        try
-        {
-            var shortWait = new WebDriverWait(Driver, TimeSpan.FromSeconds(shortSec));
-            shortWait.IgnoreExceptionTypes(typeof(NoSuchElementException), typeof(ElementNotInteractableException));
-            var el = shortWait.Until(ExpectedConditions.ElementToBeClickable(by));
-            ScrollTo(el);
-            el.Click();
-            return true;
-        }
-        catch (WebDriverTimeoutException)
-        {
-            return false;
-        }
-        catch (ElementClickInterceptedException)
-        {
-            return false;
-        }
-    }
-
-    protected void ClickWithExpand(By checkbox, By sectionHeader)
-    {
-        if (TryClick(checkbox)) return;
-
-        var header = Wait.Until(ExpectedConditions.ElementToBeClickable(sectionHeader));
-        ScrollTo(header);
-        header.Click();
-        TestContext.WriteLine($"Кликнули по хедеру и развернули секцию");
-
-        var cb = Wait.Until(ExpectedConditions.ElementExists(checkbox));
-        TestContext.WriteLine($"Подождали");
-        ScrollTo(cb);
-        cb.Click();
-        TestContext.WriteLine($"Кликнули по чекбоксу");
-    }
 }

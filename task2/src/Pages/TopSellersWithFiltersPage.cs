@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Text.RegularExpressions;
 using OpenQA.Selenium;
 using task2.Core.Utils;
@@ -9,14 +8,12 @@ namespace task2.Pages;
 
 public class TopSellersWithFiltersPage : BasePage
 {
-    public readonly SearchFiltersComponent SearchFiltersComponent;
     public readonly FilterApplierComp FilterApplierComp;
     public readonly CookieBannerComponent Cookies;
 
 
     public TopSellersWithFiltersPage(IWebDriver driver) : base(driver)
     {
-        SearchFiltersComponent = new SearchFiltersComponent(driver);
         FilterApplierComp = new FilterApplierComp(driver, _counterBy, _rowsBy);
         Cookies = new CookieBannerComponent(driver);
     }
@@ -26,7 +23,6 @@ public class TopSellersWithFiltersPage : BasePage
 
     private By TopSellersMoreResultsPageIndicator =>
         By.XPath("//*[contains(@class,'pageheader') and (contains(text(),'Top Sellers'))]");
-
 
     private By FirstGameResult =>
         By.XPath("//*[@id='search_resultsRows']//a[contains(@class,'search_result_row')][1]");
@@ -41,7 +37,7 @@ public class TopSellersWithFiltersPage : BasePage
 
     private By FirstGamePrice =>
         By.XPath(
-            "//*[@id='search_resultsRows']//a[contains(@class,'search_result_row')][1]//*[contains(@class,'search_price')]");
+            "//*[@id='search_resultsRows']//a[contains(@class,'search_result_row')][1]//*[contains(@class,'discount_final_price')]");
 
 
     private By ExpectedFilterResultsCounter => By.XPath("//*[@class='search_results_count']");
@@ -81,37 +77,19 @@ public class TopSellersWithFiltersPage : BasePage
     public GameInfo GetFirstGameInfoFromList()
     {
         UiWaits.WaitResultsSettled(Driver, ExpectedFilterResultsCounter, FilterResultsBy);
-
         var title = Text(FirstGameTitle);
         var date = Text(FirstGameReleaseDate);
         var rawPrice = Text(FirstGamePrice);
-        var price = rawPrice
-            .Split('\n', '\r')
-            .Select(s => s.Trim())
-            .LastOrDefault(s => !string.IsNullOrWhiteSpace(s)) ?? string.Empty;
-
+        var digits = new string(rawPrice.Where(char.IsDigit).ToArray());
+        int price = string.IsNullOrEmpty(digits) ? 0 : int.Parse(digits);
         return new GameInfo { Title = title, ReleaseDate = date, Price = price };
     }
+
 
     public GameDetailsPage ClickFirstGameInList()
     {
         var firstGame = Find(FirstGameResult);
         firstGame.Click();
         return new GameDetailsPage(Driver);
-    }
-
-    public bool IsCheckboxChecked(By locator)
-    {
-        System.Threading.Thread.Sleep(150);
-        try
-        {
-            var element = Find(locator);
-            var classAttr = element.GetAttribute("class") ?? string.Empty;
-            return classAttr.Contains("checked", StringComparison.OrdinalIgnoreCase);
-        }
-        catch (NoSuchElementException)
-        {
-            return false;
-        }
     }
 }

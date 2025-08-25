@@ -2,13 +2,9 @@
 
 namespace task2.Pages;
 
-public class StorePage : BasePage
+public class StorePage(IWebDriver driver) : BasePage(driver)
 {
     private By StorePageIndicator => By.XPath("//*[@id='store_header']//*[@id='store_nav_area']");
-
-    public StorePage(IWebDriver driver) : base(driver)
-    {
-    }
 
     public bool IsAt()
     {

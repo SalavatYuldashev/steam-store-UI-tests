@@ -6,5 +6,5 @@ public class GameInfo
 {
     public string Title { get; set; } = String.Empty;
     public string ReleaseDate { get; set; } = String.Empty;
-    public string Price { get; set; } = String.Empty;
+    public int Price { get; set; }
 }

@@ -8,6 +8,4 @@ public class TestSettings
     public int ImplicitWaitSec { get; set; } = 5;
     public string UiLanguage { get; set; } = "en";
     public bool Maximize { get; set; } = true;
-    
-    
 }

@@ -1,6 +1,6 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 using OpenQA.Selenium;
-using System;
 using task2.Core.Browser;
 using task2.Core.Utils;
 using task2.Pages;
@@ -8,22 +8,21 @@ using task2.Pages;
 namespace task2.Tests;
 
 [TestFixture]
-[Category("ui")]
-public class TopSellersTest
+public class TopSellersTestWithUniversalTestData
 {
-    private IWebDriver _driver = null!;
-    private HomePage _homePage = null!;
+    private IWebDriver? _driver;
+    private HomePage? _homePage;
 
     [SetUp]
     public void Setup()
     {
         _driver = WebDriverSingleton.Driver;
         _driver.Navigate().GoToUrl(AppConfig.Settings.BaseUrl);
-        TestContext.WriteLine($"Выполнен переход на сайт: {AppConfig.Settings.BaseUrl}");
+        TestContext.WriteLine($"Navigated to: {AppConfig.Settings.BaseUrl}");
 
         _homePage = new HomePage(_driver);
-        TestContext.WriteLine($"Создана страница: {_homePage.ToString()}");
-        Assert.That(_homePage.IsAt(), Is.True, "Failed to navigate to HomePage in SetUp");
+        TestContext.WriteLine($"Page created: {_homePage}");
+        Assert.That(_homePage.IsAt(), Is.True, "Home page was not opened.");
     }
 
     [TearDown]
@@ -33,7 +32,6 @@ public class TopSellersTest
         {
             if (_driver != null)
             {
-                var currentUrl = _driver.Url;
                 _driver.Navigate().GoToUrl(AppConfig.Settings.BaseUrl);
             }
         }
@@ -46,61 +44,53 @@ public class TopSellersTest
             }
             catch
             {
-                return;
+                /* ignore */
             }
         }
     }
 
     [Test]
-    public void NavigateToTopSellersAndApplyFilters()
+    public void NavigateToTopSellers_ApplyFilters_FromJson()
     {
-        var topSellersPage = _homePage.GoToTopSellersPage(_driver);
-        Assert.That(topSellersPage.IsAt(), Is.True, "Failed to navigate to TopSellersPage");
+        var topSellersPage = _homePage!.GoToTopSellersPage(_driver!);
+        Assert.That(topSellersPage.IsAt(), Is.True, "Top Sellers page was not opened.");
         topSellersPage.Cookies.AcceptIfPresent();
-        TestContext.WriteLine("Открыта страница с лидерами продаж");
+        TestContext.WriteLine("Top Sellers page opened.");
 
-        var topSellersWithFiltersPage = topSellersPage.ScrollToMoreTopSellersButtonAndClick(_driver);
-        Assert.That(topSellersWithFiltersPage.IsAt(), Is.True, "Failed to navigate to TopSellersWithFiltersPage");
+
+        var topSellersWithFiltersPage = topSellersPage.ScrollToMoreTopSellersButtonAndClick(_driver!);
+        Assert.That(topSellersWithFiltersPage.IsAt(), Is.True, "Top Sellers with filters page was not opened.");
         topSellersPage.Cookies.AcceptIfPresent();
-        TestContext.WriteLine("Открыта расширенная страница с лидерами продаж");
-        
-        topSellersWithFiltersPage.SearchFiltersComponent.SelectSteamOsLinuxCheckbox();
-        var isSteamOsChecked =
-            topSellersWithFiltersPage.IsCheckboxChecked(topSellersWithFiltersPage.SearchFiltersComponent
-                .SteamOsLinuxCheckbox);
-        Assert.That(isSteamOsChecked, Is.True, "Failed to check SteamOsLinuxCheckbox");
-        TestContext.WriteLine("Выбран чек бокc SteamOsLinuxCheckbox");
-        
-        topSellersWithFiltersPage.SearchFiltersComponent.SelectCoopLanCheckbox();
-        var isLanCoopChecked =
-            topSellersWithFiltersPage.IsCheckboxChecked(topSellersWithFiltersPage.SearchFiltersComponent
-                .CoopLanCheckbox);
-        Assert.That(isLanCoopChecked, Is.True, "Failed to check LANCoopCheckbox");
-        TestContext.WriteLine("Выбран чек бокc LANCoopCheckbox");
-        
-        topSellersWithFiltersPage.SearchFiltersComponent.SelectActionCheckbox();
-        var isActionChecked =
-            topSellersWithFiltersPage.IsCheckboxChecked(topSellersWithFiltersPage.SearchFiltersComponent
-                .ActionCheckbox);
-        Assert.That(isActionChecked, Is.True, "Failed to check ActionCheckbox");
-        TestContext.WriteLine("Выбран чек бокc ActionCheckbox");
-        
+        TestContext.WriteLine("Top Sellers page with filters opened.");
+
+
+        var cfg = FiltersReader.Load();
+        var steps = cfg.TopSellersFilters;
+
+        topSellersWithFiltersPage.FilterApplierComp.ApplyAllFilters(steps);
+        TestContext.WriteLine($"Applied {steps.Count} filters.");
+
+
         var expected = topSellersWithFiltersPage.GetExpectedFilterResultsCount();
         var actual = topSellersWithFiltersPage.GetActualFilterResultsCount();
         Assert.That(actual, Is.EqualTo(expected),
-            $"Несовпадение: в счётчике {expected}, на странице {actual}");
-        TestContext.WriteLine("Сравнили кол-во игр");
+            $"Mismatch: counter shows {expected}, list has {actual}.");
 
-        var gameFromList = topSellersWithFiltersPage.GetFirstGameInfoFromList();
-        Assert.That(gameFromList, Is.Not.Null);
-        TestContext.WriteLine("Заполнили данные игры из списка");
-        var gameDetailsPage = topSellersWithFiltersPage.ClickFirstGameInList();
-        Assert.That(gameDetailsPage.IsAt(), Is.True, "Failed to navigate to FirstGameInList");
-        TestContext.WriteLine("Открыли страницу первой игры");
-        var gameFromGameDetailsPage = gameDetailsPage.GetGameInfo();
-        Assert.That(gameFromList.Title, Is.EqualTo(gameFromGameDetailsPage.Title));
-        Assert.That(gameFromList.ReleaseDate, Is.EqualTo(gameFromGameDetailsPage.ReleaseDate));
-        Assert.That(gameFromList.Price, Is.EqualTo(gameFromGameDetailsPage.Price));
-        TestContext.WriteLine("Сравнили информацию о играх");
+
+        var listGame = topSellersWithFiltersPage.GetFirstGameInfoFromList();
+        Assert.That(listGame, Is.Not.Null);
+        TestContext.WriteLine("Captured first game info from the list.");
+
+        var detailsPage = topSellersWithFiltersPage.ClickFirstGameInList();
+        Assert.That(detailsPage.IsAt(), Is.True, "Game details page was not opened.");
+        TestContext.WriteLine("Opened game details page.");
+
+        var detailsGame = detailsPage.GetGameInfo();
+
+        Assert.That(listGame.Title, Is.EqualTo(detailsGame.Title), "Title mismatch.");
+        Assert.That(listGame.ReleaseDate, Is.EqualTo(detailsGame.ReleaseDate), "Release date mismatch.");
+        Assert.That(listGame.Price, Is.EqualTo(detailsGame.Price),
+            $"Price mismatch: list {listGame.Price} vs details {detailsGame.Price}");
+        TestContext.WriteLine("Verified game info matches between list and details.");
     }
 }

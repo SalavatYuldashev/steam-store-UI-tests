@@ -3,16 +3,9 @@ using task2.Pages.Components;
 
 namespace task2.Pages;
 
-public class TopSellersPage : BasePage
+public class TopSellersPage(IWebDriver driver) : BasePage(driver)
 {
-    public readonly SearchFiltersComponent SearchFiltersComponent;
-    public readonly CookieBannerComponent Cookies;
-
-    public TopSellersPage(IWebDriver driver) : base(driver)
-    {
-        SearchFiltersComponent = new SearchFiltersComponent(driver);
-        Cookies = new CookieBannerComponent(driver);
-    }
+    public readonly CookieBannerComponent Cookies = new(driver);
 
     private By TopSellersPageIndicator =>
         By.XPath("//*[contains(@data-featuretarget,'react-root')]//*[contains(text(),'Top Sellers')]");
@@ -35,7 +28,6 @@ public class TopSellersPage : BasePage
             return false;
         }
     }
-
     public TopSellersWithFiltersPage ScrollToMoreTopSellersButtonAndClick(IWebDriver driver)
     {
         ScrollAndClick(ViewMoreTopSellersButton);

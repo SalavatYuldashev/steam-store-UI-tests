@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
 using task2.Core.Utils;
 
@@ -12,35 +13,22 @@ namespace task2.Pages.Components
         private readonly By _counterBy = counterBy;
         private readonly By _rowsBy = rowsBy;
 
-        public By BuildBlockLocator(string blockKey)
-        {
-            return By.XPath(
-                $"//*[contains(@class,'search_collapse_block') and contains(@data-collapse-name,'{blockKey}')]"
-            );
-        }
+        public By BuildBlockLocator(string blockKey) =>
+            By.XPath($"//*[contains(@class,'search_collapse_block') and contains(@data-collapse-name,'{blockKey}')]");
 
-        public By BuildBlockHeaderLocator(string blockKey)
-        {
-            return By.XPath(
-                $"//*[contains(@class,'search_collapse_block') and contains(@data-collapse-name,'{blockKey}')]//*[contains(@class,'block_header')]"
-            );
-        }
+        public By BuildBlockHeaderLocator(string blockKey) =>
+            By.XPath(
+                $"//*[contains(@class,'search_collapse_block') and contains(@data-collapse-name,'{blockKey}')]//*[contains(@class,'block_header')]");
 
         public By BuildFilterCheckboxLocator(string blockKey, string filterName)
         {
             var nameLit = XPathLiteral(filterName);
             return By.XPath(
-                $"//*[contains(@class,'search_collapse_block') and contains(@data-collapse-name,'{blockKey}')]"
-                + $"//*[@data-loc={nameLit}]//*[contains(@class,'checkbox')]"
-            );
+                $"//*[contains(@class,'search_collapse_block') and contains(@data-collapse-name,'{blockKey}')]//*[@data-loc={nameLit}]//*[contains(@class,'checkbox')]");
         }
 
-        public By? BuildSearchInputLocator(string blockKey)
-        {
-            return string.Equals(blockKey, "tag", StringComparison.OrdinalIgnoreCase)
-                ? By.Id("TagSuggest")
-                : null;
-        }
+        public By? BuildSearchInputLocator(string blockKey) =>
+            string.Equals(blockKey, "tag", StringComparison.OrdinalIgnoreCase) ? By.Id("TagSuggest") : null;
 
         private void ExpandIfCollapsed(string blockKey)
         {
@@ -50,7 +38,7 @@ namespace task2.Pages.Components
             {
                 var header = Wait.Until(ExpectedConditions.ElementToBeClickable(BuildBlockHeaderLocator(blockKey)));
                 header.Click();
-                UiWaits.WaitResultsSettled(Driver, _counterBy, _rowsBy);
+                UiWaits.WaitResultsSettled(Driver, _counterBy, _rowsBy, throwOnTimeout: false);
             }
         }
 
@@ -63,7 +51,8 @@ namespace task2.Pages.Components
             var input = Wait.Until(ExpectedConditions.ElementToBeClickable(inputBy));
             input.Clear();
             input.SendKeys(text);
-            UiWaits.WaitResultsSettled(Driver, _counterBy, _rowsBy);
+
+            UiWaits.WaitResultsSettled(Driver, _counterBy, _rowsBy, throwOnTimeout: false);
         }
 
         private void ClickCheckbox(By checkboxBy)
@@ -89,16 +78,20 @@ namespace task2.Pages.Components
             try
             {
                 ExpandIfCollapsed(step.Block);
+
                 if (step.UseSearch)
                 {
                     var text = string.IsNullOrWhiteSpace(step.SearchText) ? step.Name : step.SearchText!;
-                    TypeSearchIfNeeded(step.Block, useSearch: true, text);
+                    TypeSearchIfNeeded(step.Block, true, text);
                 }
 
                 var checkboxBy = BuildFilterCheckboxLocator(step.Block, step.Name);
                 ClickCheckbox(checkboxBy);
-                UiWaits.WaitResultsSettled(Driver, _counterBy, _rowsBy);
-                return IsChecked(checkboxBy);
+                var wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(5));
+                wait.Until(_ => IsChecked(checkboxBy));
+                UiWaits.WaitResultsSettled(Driver, _counterBy, _rowsBy, throwOnTimeout: false);
+
+                return true;
             }
             catch (Exception ex)
             {
