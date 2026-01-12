@@ -1,0 +1,25 @@
+﻿using NUnit.Framework;
+using task2.Core.Browser;
+using task2.Core.Utils;
+
+
+namespace task2.Tests;
+
+[SetUpFixture]
+public class GlobalSetup
+{
+    [OneTimeSetUp]
+    public void Setup()
+    {
+        TestContext.WriteLine($"Tests will run on website: {AppConfig.Settings.BaseUrl}");
+        TestContext.WriteLine($"Browser settings: Headless= {AppConfig.Settings.Headless}, " +
+                              $"Incognito={AppConfig.Settings.Incognito}, " +
+                              $"Language={AppConfig.Settings.UiLanguage}");
+    }
+
+    [OneTimeTearDown]
+    public void Teardown()
+    {
+        WebDriverSingleton.Quit();
+    }
+}
